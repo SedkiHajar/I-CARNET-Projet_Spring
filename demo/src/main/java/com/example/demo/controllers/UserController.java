@@ -12,6 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.w3c.dom.stylesheets.LinkStyle;
+
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users") //localhost:8080/users
@@ -30,10 +35,22 @@ public class UserController {
         return new ResponseEntity<UserResponse>(userResponse, HttpStatus.OK);
     }
 
+    @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
+    public List<UserResponse> getAllUsers(@RequestParam(value="page",defaultValue = "1") int page, @RequestParam(value="limit",defaultValue = "15")int limit){
+        List<UserResponse> usersResponse =new ArrayList<>();
+        List<UserDto> users=userService.getUsers(page, limit);
+        for (UserDto userDto:users){
+            UserResponse user=new UserResponse();
+            BeanUtils.copyProperties(userDto,user);
+            usersResponse.add(user);
+        }
+        return usersResponse;
+    }
+
     @PostMapping(consumes ={MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE},
                  produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE}
                  )
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest)throws Exception{
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest)throws Exception{
         if(userRequest.getFirstName().isEmpty()) throw new UserException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
         UserDto userDto=new UserDto(); //couche representation
