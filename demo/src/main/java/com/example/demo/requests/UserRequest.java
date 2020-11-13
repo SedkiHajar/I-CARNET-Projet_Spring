@@ -2,6 +2,7 @@ package com.example.demo.requests;
 
 
 import javax.validation.constraints.*;
+import java.util.List;
 
 public class UserRequest {
     //@NotNull(message="Ce champ ne doit pas etre null !")
@@ -23,6 +24,11 @@ public class UserRequest {
     @Pattern(regexp = "(?=^.{8,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
              message="ce mot de passe doit comporter des lettres en Majuscules et Miniscules et numeros")
     private String password;
+
+    private List<AddressRequest> addresses;
+    private ContactRequest contact;
+
+
 
     public String getFirstName() {
         return firstName;
@@ -54,5 +60,21 @@ public class UserRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<AddressRequest> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<AddressRequest> adresses) {
+        this.addresses = adresses;
+    }
+
+    public ContactRequest getContact() {
+        return contact;
+    }
+
+    public void setContact(ContactRequest contact) {
+        this.contact = contact;
     }
 }

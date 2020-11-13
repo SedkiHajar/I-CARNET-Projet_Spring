@@ -1,6 +1,7 @@
 package com.example.demo.shared.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class UserDto implements Serializable {
     private static final long serialVersionUID = -8124178505270325000L;
@@ -13,6 +14,8 @@ public class UserDto implements Serializable {
     private String encryptedPassword;
     private String emailVerificationToken;
     private Boolean emailVerificationStatus=false;
+    private  List<AddressDto> addresses;
+    private  ContactDto contact;
 
     public long getId() {
         return id;
@@ -84,5 +87,21 @@ public class UserDto implements Serializable {
 
     public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
         this.emailVerificationStatus = emailVerificationStatus;
+    }
+
+    public List<AddressDto> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<AddressDto> addresses) {
+        this.addresses = addresses;
+    }
+
+    public ContactDto getContact() {
+        return contact;
+    }
+
+    public void setContact(ContactDto contact) {
+        this.contact = contact;
     }
 }

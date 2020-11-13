@@ -6,13 +6,13 @@ import com.example.demo.responses.ErrorMessages;
 import com.example.demo.responses.UserResponse;
 import com.example.demo.services.UserService;
 import com.example.demo.shared.dto.UserDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -36,7 +36,8 @@ public class UserController {
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
-    public List<UserResponse> getAllUsers(@RequestParam(value="page",defaultValue = "1") int page, @RequestParam(value="limit",defaultValue = "15")int limit){
+    public List<UserResponse> getAllUsers(@RequestParam(value="page",defaultValue = "1") int page,
+                                          @RequestParam(value="limit",defaultValue = "15")int limit){
         List<UserResponse> usersResponse =new ArrayList<>();
         List<UserDto> users=userService.getUsers(page, limit);
         for (UserDto userDto:users){
@@ -53,15 +54,14 @@ public class UserController {
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest)throws Exception{
         if(userRequest.getFirstName().isEmpty()) throw new UserException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
-        UserDto userDto=new UserDto(); //couche representation
-        BeanUtils.copyProperties(userRequest,userDto); //couche representation
-
+        //UserDto userDto=new UserDto(); //couche representation
+        ModelMapper modelMapper = new ModelMapper();
+        UserDto userDto = modelMapper.map(userRequest, UserDto.class);
+        //BeanUtils.copyProperties(userRequest,userDto); //couche representation
         UserDto createUser =userService.createUser(userDto);
-
-        UserResponse userResponse = new UserResponse();
-
-        BeanUtils.copyProperties(createUser,userResponse);
-
+        //UserResponse userResponse = new UserResponse();
+        //BeanUtils.copyProperties(createUser,userResponse);
+        UserResponse userResponse=modelMapper.map(createUser,UserResponse.class);
         return new ResponseEntity<UserResponse>(userResponse, HttpStatus.CREATED);
 
     }

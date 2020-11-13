@@ -5,7 +5,9 @@ import com.example.demo.repositories.UserRepository;
 import com.example.demo.responses.UserResponse;
 import com.example.demo.services.UserService;
 import com.example.demo.shared.Utils;
+import com.example.demo.shared.dto.AddressDto;
 import com.example.demo.shared.dto.UserDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,18 +40,29 @@ public class UserServiceImpl implements UserService {
         UserEntity checkUser =userRepository.findByEmail(user.getEmail());
 
         if(checkUser!=null) {throw new RuntimeException("User Already Exists!");}
+        //UserEntity userEntity = new UserEntity();
+        //BeanUtils.copyProperties(user ,userEntity);
 
-        UserEntity userEntity = new UserEntity();
+        for(int i=0;i<user.getAddresses().size();i++){
+            AddressDto address=user.getAddresses().get(i);
+            address.setUser(user);
+            address.setAddressId(util.generateStringId(30));
+            user.getAddresses().set(i,address);
+        }
+        user.getContact().setContactId(util.generateStringId(30));
+        user.getContact().setUser(user);
 
-        BeanUtils.copyProperties(user ,userEntity);
+        ModelMapper modelMapper=new ModelMapper();
+        UserEntity userEntity =modelMapper.map(user,UserEntity.class);
 
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userEntity.setUserId(util.generateUserId(32));
+        userEntity.setUserId(util.generateStringId(32));
 
         UserEntity newUser= userRepository.save(userEntity);
 
-        UserDto userDto= new UserDto();
-        BeanUtils.copyProperties(newUser, userDto);
+        //UserDto userDto= new UserDto();
+        //BeanUtils.copyProperties(newUser, userDto);
+        UserDto userDto= modelMapper.map(newUser,UserDto.class);
 
         return userDto ;
 

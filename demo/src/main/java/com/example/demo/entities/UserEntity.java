@@ -1,13 +1,16 @@
 package com.example.demo.entities;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.io.Serializable;
+import org.hibernate.boot.jaxb.hbm.internal.CacheAccessTypeConverter;
 
-@Entity(name="users")
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@Entity
+@Table(name="users")
 public class UserEntity implements Serializable {
 
     private static final long serialVersionUID = -9146487759870644513L;
@@ -36,6 +39,15 @@ public class UserEntity implements Serializable {
 
     @Column(nullable=false, columnDefinition = "boolean default false")
     private Boolean emailVerificationStatus=false ;
+
+    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
+    private List<AddressEntity> addresses;
+
+    @OneToOne(mappedBy = "user",cascade=CascadeType.ALL)
+    private ContactEntity contact;
+
+    @ManyToMany(fetch=FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "users")
+    private Set<GroupEntity> groups=new HashSet<>();
 
     public long getId() {
         return id;
@@ -99,5 +111,21 @@ public class UserEntity implements Serializable {
 
     public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
         this.emailVerificationStatus = emailVerificationStatus;
+    }
+
+    public List<AddressEntity> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<AddressEntity> addresses) {
+        this.addresses = addresses;
+    }
+
+    public ContactEntity getContact() {
+        return contact;
+    }
+
+    public void setContact(ContactEntity contact) {
+        this.contact = contact;
     }
 }
