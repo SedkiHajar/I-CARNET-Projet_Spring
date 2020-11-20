@@ -6,7 +6,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity(name="contacts")
-
 public class ContactEntity implements Serializable {
     private static final long serialVersionUID = -8992899328415934091L;
     @Id
@@ -54,5 +53,13 @@ public class ContactEntity implements Serializable {
 
     public void setSkype(String skype) {
         this.skype = skype;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }

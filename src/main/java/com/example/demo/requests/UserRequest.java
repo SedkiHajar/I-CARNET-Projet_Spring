@@ -25,6 +25,9 @@ public class UserRequest {
              message="ce mot de passe doit comporter des lettres en Majuscules et Miniscules et numeros")
     private String password;
 
+
+    private Boolean admin;
+
     private List<AddressRequest> addresses;
     private ContactRequest contact;
 
@@ -76,5 +79,13 @@ public class UserRequest {
 
     public void setContact(ContactRequest contact) {
         this.contact = contact;
+    }
+
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
     }
 }

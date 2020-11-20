@@ -5,7 +5,8 @@ import com.example.demo.shared.dto.UserDto;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity(name="addresses")
+@Entity
+@Table(name="addresses")
 public class AddressEntity implements Serializable {
     private static final long serialVersionUID = 6798638742721221557L;
 

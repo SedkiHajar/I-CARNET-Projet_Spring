@@ -10,6 +10,7 @@ public class UserDto implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
+    private Boolean admin;
     private String password;
     private String encryptedPassword;
     private String emailVerificationToken;
@@ -103,5 +104,13 @@ public class UserDto implements Serializable {
 
     public void setContact(ContactDto contact) {
         this.contact = contact;
+    }
+
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
     }
 }

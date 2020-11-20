@@ -2,12 +2,12 @@ package com.example.demo.services.impl;
 
 import com.example.demo.entities.UserEntity;
 import com.example.demo.repositories.UserRepository;
-import com.example.demo.responses.UserResponse;
 import com.example.demo.services.UserService;
 import com.example.demo.shared.Utils;
 import com.example.demo.shared.dto.AddressDto;
 import com.example.demo.shared.dto.UserDto;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
         user.getContact().setUser(user);
 
         ModelMapper modelMapper=new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         UserEntity userEntity =modelMapper.map(user,UserEntity.class);
 
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -62,6 +63,7 @@ public class UserServiceImpl implements UserService {
 
         //UserDto userDto= new UserDto();
         //BeanUtils.copyProperties(newUser, userDto);
+
         UserDto userDto= modelMapper.map(newUser,UserDto.class);
 
         return userDto ;
@@ -119,15 +121,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getUsers(int page, int limit) {
-        if(page>0)page-=1;
+    public List<UserDto> getUsers(int page, int limit, String search,int status) {
+        if(page>0) page = page - 1;
         List<UserDto> usersDto = new ArrayList<>();
         Pageable pageableRequest= PageRequest.of(page,limit);
-        Page<UserEntity> userPage=userRepository.findAll(pageableRequest);
+        Page<UserEntity> userPage;
+        if(search.isEmpty()){
+             userPage=userRepository.findAllUsers(pageableRequest);
+        }
+        else{
+             userPage=userRepository.findAllUserByCriteria(pageableRequest,search,status);
+        }
+
         List<UserEntity> users=userPage.getContent();
         for (UserEntity userEntity:users){
-            UserDto user=new UserDto();
-            BeanUtils.copyProperties(userEntity,user);
+            ModelMapper modelMapper=new ModelMapper();
+            UserDto user=modelMapper.map(userEntity,UserDto.class);
             usersDto.add(user);
         }
         return usersDto;

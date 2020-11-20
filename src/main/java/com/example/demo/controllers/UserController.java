@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
+@CrossOrigin(origins="*")
 @RestController
 @RequestMapping("/users") //localhost:8080/users
 public class UserController {
@@ -35,14 +36,20 @@ public class UserController {
         return new ResponseEntity<UserResponse>(userResponse, HttpStatus.OK);
     }
 
+
     @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE,MediaType.APPLICATION_JSON_VALUE})
     public List<UserResponse> getAllUsers(@RequestParam(value="page",defaultValue = "1") int page,
-                                          @RequestParam(value="limit",defaultValue = "15")int limit){
+                                          @RequestParam(value="limit",defaultValue = "4")int limit,
+                                          @RequestParam(value="search",defaultValue = "")String search,
+                                          @RequestParam(value="status",defaultValue = "0")int status
+                                          ){
         List<UserResponse> usersResponse =new ArrayList<>();
-        List<UserDto> users=userService.getUsers(page, limit);
+        List<UserDto> users=userService.getUsers(page, limit,search,status);
         for (UserDto userDto:users){
-            UserResponse user=new UserResponse();
-            BeanUtils.copyProperties(userDto,user);
+            ModelMapper modelMapper = new ModelMapper();
+            UserResponse user = modelMapper.map(userDto, UserResponse.class);
+            //UserResponse user=new UserResponse();
+            //BeanUtils.copyProperties(userDto,user);
             usersResponse.add(user);
         }
         return usersResponse;
@@ -86,7 +93,7 @@ public class UserController {
     }
 
     @DeleteMapping(path="/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable String id){
+    public  ResponseEntity<Object> deleteUser(@PathVariable String id){
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

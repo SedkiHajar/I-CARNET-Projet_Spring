@@ -2,6 +2,7 @@ package com.example.demo.entities;
 
 
 import org.hibernate.boot.jaxb.hbm.internal.CacheAccessTypeConverter;
+import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,6 +32,9 @@ public class UserEntity implements Serializable {
     @Column(nullable=false, length=120, unique = true)
     private String email;
 
+    @Column(nullable = true)
+    private Boolean admin=false;
+
     @Column(nullable=false)
     private String encryptedPassword;
 
@@ -40,10 +44,10 @@ public class UserEntity implements Serializable {
     @Column(nullable=false, columnDefinition = "boolean default false")
     private Boolean emailVerificationStatus=false ;
 
-    @OneToMany(mappedBy = "user",cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "user",fetch=FetchType.EAGER,cascade=CascadeType.ALL)
     private List<AddressEntity> addresses;
 
-    @OneToOne(mappedBy = "user",cascade=CascadeType.ALL)
+    @OneToOne(mappedBy = "user",fetch=FetchType.EAGER,cascade=CascadeType.ALL)
     private ContactEntity contact;
 
     @ManyToMany(fetch=FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "users")
@@ -128,4 +132,14 @@ public class UserEntity implements Serializable {
     public void setContact(ContactEntity contact) {
         this.contact = contact;
     }
+
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
+    }
+
+
 }

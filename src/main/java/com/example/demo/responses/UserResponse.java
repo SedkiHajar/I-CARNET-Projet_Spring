@@ -1,6 +1,7 @@
 package com.example.demo.responses;
 
 import com.example.demo.entities.AddressEntity;
+import com.example.demo.requests.ContactRequest;
 
 import java.util.List;
 
@@ -9,7 +10,9 @@ public class UserResponse {
     private String firstName;
     private String lastName;
     private String email;
+    private Boolean admin;
     private List<AddressResponse> addresses;
+    private ContactResponse contact;
 
     public String getUserId() {
         return userId;
@@ -49,5 +52,21 @@ public class UserResponse {
 
     public void setAddresses(List<AddressResponse> addresses) {
         this.addresses = addresses;
+    }
+
+    public ContactResponse getContact() {
+        return contact;
+    }
+
+    public void setContact(ContactResponse contact) {
+        this.contact = contact;
+    }
+
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
     }
 }
